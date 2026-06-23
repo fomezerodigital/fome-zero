@@ -3,143 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acesso Restrito - Painel SaaS</title>
+    <title>Painel de Controle - Fome Zero</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background: linear-gradient(135deg, #0f172a, #1e293b); height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: rgba(255, 255, 255, 0.95); padding: 40px 30px; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; }
-        .logo-area { margin-bottom: 25px; }
-        .logo-area i { font-size: 3rem; color: #dc2626; background: #fee2e2; padding: 15px; border-radius: 50%; }
-        .logo-area h1 { font-size: 1.4rem; color: #1e293b; margin-top: 12px; font-weight: 800; }
-        .logo-area p { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
-        .form-group { margin-bottom: 20px; text-align: left; position: relative; }
-        .form-group label { display: block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; }
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i.input-icon { position: absolute; left: 12px; color: #94a3b8; }
-        input { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; padding: 12px 12px 12px 40px; border-radius: 8px; font-size: 0.9rem; outline: none; }
-        .btn-toggle-senha { position: absolute; right: 12px; background: none; border: none; color: #94a3b8; cursor: pointer; }
-        .btn-entrar { width: 100%; background: #dc2626; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
-        .msg-erro { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; margin-bottom: 15px; display: none; align-items: center; gap: 8px; text-align: left; }
-        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s linear infinite; display: none; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        body { background: #f1f5f9; color: #1e293b; padding: 15px; }
+        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { font-size: 1.3rem; margin-bottom: 15px; color: #0f172a; text-align: center; font-weight: 800; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 0.75rem; font-weight: bold; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 8px; font-size: 0.9rem; outline: none; }
+        button { width: 100%; background: #dc2626; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; margin-top: 10px; }
+        
+        /* DESIGN DOS SLOTS DA GALERIA */
+        .upload-secao { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
+        .box-capa { width: 100%; height: 100px; background: #e2e8f0; border-radius: 8px; margin-bottom: 10px; object-fit: cover; }
+        .wrapper-logo { position: relative; margin-top: -50px; margin-bottom: 10px; display: flex; justify-content: center; }
+        .circulo-logo { width: 80px; height: 80px; background: #cbd5e1; border-radius: 50%; border: 3px solid white; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-galeria { background: #e2e8f0; color: #475569; font-size: 0.8rem; padding: 6px 12px; border-radius: 6px; display: inline-block; cursor: pointer; font-weight: 600; margin-top: 5px; border: 1px solid #cbd5e1; }
+        
+        .card-produto { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-status { padding: 6px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; width: auto; margin: 0; }
+        .btn-status.aberto { background: #dcfce7; color: #15803d; }
+        .btn-status.fechado { background: #fee2e2; color: #b91c1c; }
     </style>
+    
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script src="config.js"></script>
 </head>
 <body>
 
-    <div id="conteudo-dinamico" style="width: 100%; display: flex; justify-content: center;">
-        <div class="login-card">
-            <div class="logo-area">
-                <i class="fa-solid fa-lock"></i>
-                <h1>Painel Administrativo</h1>
-                <p>Insira suas credenciais de acesso</p>
-            </div>
-
-            <div id="erro-box" class="msg-erro">
-                <i class="fa-solid fa-circle-exclamation"></i>
-                <span id="erro-txt">Usuário ou senha incorretos.</span>
-            </div>
-
-            <form id="login-form" onsubmit="executarLogin(event)">
-                <div class="form-group">
-                    <label>Usuário</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-user input-icon"></i>
-                        <input type="text" id="login-user" placeholder="admin" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Senha</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-key input-icon"></i>
-                        <input type="password" id="login-pass" placeholder="••••••••" required>
-                        <button type="button" onclick="toggleSenhaVisivel()" class="btn-toggle-senha" id="btn-olho"><i class="fa-solid fa-eye"></i></button>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-entrar" id="btn-submit">
-                    <span id="btn-texto">Entrar no Sistema</span>
-                    <div class="spinner" id="btn-spinner"></div>
-                </button>
-            </form>
-        </div>
+    <div class="container" id="painel-conteudo">
+        <h2>🔑 Acesso ao Painel</h2>
+        <div class="form-group"><label>Usuário:</label><input type="text" id="user" value="admin"></div>
+        <div class="form-group"><label>Senha:</label><input type="password" id="pass" value="admin123"></div>
+        <button onclick="verificarLogin()">Entrar no Painel</button>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        // Correção inteligente: Lê de forma case-insensitive (aceita loja, Loja ou LOJA)
         const lojaId = urlParams.get('loja') || urlParams.get('Loja') || urlParams.get('LOJA');
 
-        // Se o navegador cortar o link, exibe uma caixa para digitar em vez de dar erro travado
-        if(!lojaId) {
-            document.getElementById('conteudo-dinamico').innerHTML = `
-                <div class="login-card">
-                    <div class="logo-area">
-                        <i class="fa-solid fa-store" style="background:#fee2e2; color:#dc2626;"></i>
-                        <h1>Acessar Painel</h1>
-                        <p>Identificador da lanchonete não encontrado.</p>
-                    </div>
-                    <div class="form-group">
-                        <label>Digite o nome da loja cadastrada:</label>
-                        <div class="input-wrapper">
-                            <i class="fa-solid fa-shop input-icon"></i>
-                            <input type="text" id="id-loja-fallback" placeholder="Ex: testeloja" style="padding-left:40px;">
-                        </div>
-                    </div>
-                    <button onclick="prosseguirComLoja()" class="btn-entrar">Confirmar e Entrar</button>
-                </div>
-            `;
+        function verificarLogin() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if (u === "admin" && p === "admin123") {
+                carregarPainel();
+            } else {
+                alert("Usuário ou senha incorretos.");
+            }
         }
 
-        function prosseguirComLoja() {
-            const id = document.getElementById('id-loja-fallback').value.trim().toLowerCase();
-            if(id) { window.location.href = 'login.html?loja=' + id; }
-        }
+        function carregarPainel() {
+            if(!lojaId) {
+                alert("Falta o identificador da loja no link!");
+                return;
+            }
 
-        if(lojaId && sessionStorage.getItem('fomezero_logado_' + lojaId) === 'true') {
-            window.location.href = 'painel.html?loja=' + lojaId;
-        }
-
-        function toggleSenhaVisivel() {
-            const input = document.getElementById('login-pass');
-            const olho = document.getElementById('btn-olho').querySelector('i');
-            if(input.type === 'password') { input.type = 'text'; olho.className = 'fa-solid fa-eye-slash'; }
-            else { input.type = 'password'; olho.className = 'fa-solid fa-eye'; }
-        }
-
-        function executarLogin(event) {
-            event.preventDefault();
-            const user = document.getElementById('login-user').value.trim();
-            const pass = document.getElementById('login-pass').value.trim();
-            const erroBox = document.getElementById('erro-box');
-            const btnTexto = document.getElementById('btn-texto');
-            const btnSpinner = document.getElementById('btn-spinner');
-            const btnSubmit = document.getElementById('btn-submit');
-
-            erroBox.style.display = 'none';
-            btnTexto.style.display = 'none';
-            btnSpinner.style.display = 'block';
-            btnSubmit.disabled = true;
-
-            database.ref('lojas/' + lojaId + '/credenciais').once('value').then((snapshot) => {
-                const credenciais = snapshot.val() || { usuario: "admin", senha: "admin123" };
+            document.getElementById('painel-conteudo').innerHTML = `
+                <h2>⚙️ Configuração da Loja</h2>
                 
-                if(user === credenciais.usuario && pass === credenciais.senha) {
-                    sessionStorage.setItem('fomezero_logado_' + lojaId, 'true');
-                    window.location.href = 'painel.html?loja=' + lojaId;
+                <button id="btn-toggle-loja" class="btn-status" onclick="alternarStatusLoja()">Carregando status...</button>
+                <hr style="margin:15px 0; border:0; border-top:1px solid #e2e8f0;">
+
+                <div class="upload-secao">
+                    <label>Imagem de Capa (Retangular)</label>
+                    <img id="visualizar-capa" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" class="box-capa">
+                    <label class="btn-galeria">
+                        <i class="fa-solid fa-image"></i> Escolher Capa da Galeria
+                        <input type="file" accept="image/*" style="display:none;" onchange="uploadImagemGaleria(this, 'capa', 800, 400)">
+                    </label>
+
+                    <div class="wrapper-logo">
+                        <img id="visualizar-logo" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=150" class="circulo-logo">
+                    </div>
+                    <label>Logo da Loja (Redonda)</label><br>
+                    <label class="btn-galeria">
+                        <i class="fa-solid fa-camera"></i> Escolher Logo da Galeria
+                        <input type="file" accept="image/*" style="display:none;" onchange="uploadImagemGaleria(this, 'logo', 300, 300)">
+                    </label>
+                </div>
+
+                <div class="form-group"><label>Nome do Estabelecimento:</label><input type="text" id="loja-nome"></div>
+                <div class="form-group"><label>WhatsApp (Com DDD, apenas números):</label><input type="text" id="loja-whats" placeholder="Ex: 5511999999999"></div>
+                <div class="form-group"><label>Taxa de Entrega Centro (R$):</label><input type="number" step="0.01" id="loja-taxa-c"></div>
+                <div class="form-group"><label>Taxa de Entrega Outros Bairros (R$):</label><input type="number" step="0.01" id="loja-taxa-b"></div>
+                <button style="background:#10b981;" onclick="salvarConfiguracoesBase()">💾 Salvar Dados Principais</button>
+
+                <h2 style="margin-top:30px; border-top:2px solid #f1f5f9; padding-top:15px;">➕ Adicionar Produto</h2>
+                <div class="form-group"><label>Nome do Item:</label><input type="text" id="p-nome"></div>
+                <div class="form-group"><label>Categoria:</label><input type="text" id="p-cat" placeholder="Ex: Hambúrgueres, Bebidas"></div>
+                <div class="form-group"><label>Descrição/Ingredientes:</label><textarea id="p-desc"></textarea></div>
+                <div class="form-group"><label>Preço (R$):</label><input type="number" step="0.01" id="p-preco"></div>
+                <button onclick="adicionarNovoProduto()">Adicionar ao Cardápio</button>
+
+                <h2 style="margin-top:20px;">📦 Seus Produtos</h2>
+                <div id="lista-produtos-painel"></div>
+            `;
+
+            ouvirDadosFirebase();
+        }
+
+        let estadoLojaAberta = true;
+        let listaProdutosGlobal = [];
+
+        function ouvirDadosFirebase() {
+            database.ref('lojas/' + lojaId + '/loja').on('value', (snapshot) => {
+                const dados = snapshot.val() || {};
+                document.getElementById('loja-nome').value = dados.nome || "";
+                document.getElementById('loja-whats').value = dados.whatsapp || "";
+                document.getElementById('loja-taxa-c').value = dados.taxaCentro || 0;
+                document.getElementById('loja-taxa-b').value = dados.taxaBairro || 0;
+                
+                if (dados.capa) document.getElementById('visualizar-capa').src = dados.capa;
+                if (dados.logo) document.getElementById('visualizar-logo').src = dados.logo;
+
+                estadoLojaAberta = dados.aberta !== false;
+                const btnStatus = document.getElementById('btn-toggle-loja');
+                if(estadoLojaAberta) {
+                    btnStatus.className = "btn-status aberto"; btnStatus.innerText = "🟢 LOJA ABERTA (Clique para Fechar)";
                 } else {
-                    throw new Error();
+                    btnStatus.className = "btn-status fechado"; btnStatus.innerText = "🔴 LOJA FECHADA (Clique para Abrir)";
                 }
-            }).catch(() => {
-                erroBox.style.display = 'flex';
-                btnTexto.style.display = 'block';
-                btnSpinner.style.display = 'none';
-                btnSubmit.disabled = false;
             });
+
+            database.ref('lojas/' + lojaId + '/produtos').on('value', (snapshot) => {
+                listaProdutosGlobal = snapshot.val() || [];
+                const container = document.getElementById('lista-produtos-painel');
+                container.innerHTML = '';
+                listaProdutosGlobal.forEach((p, idx) => {
+                    if(p && p.ativo) {
+                        container.innerHTML += `
+                            <div class="card-produto">
+                                <div><strong>${p.nome}</strong><br><span style="font-size:0.8rem; color:#64748b;">${p.cat} - R$ ${p.preco.toFixed(2)}</span></div>
+                                <button style="width:auto; padding:6px 10px; background:#ef4444; margin:0;" onclick="deletarProduto(${idx})">✕</button>
+                            </div>
+                        `;
+                    }
+                });
+            });
+        }
+
+        function alternarStatusLoja() {
+            database.ref('lojas/' + lojaId + '/loja/aberta').set(!estadoLojaAberta);
+        }
+
+        function salvarConfiguracoesBase() {
+            const nome = document.getElementById('loja-nome').value.trim();
+            const whatsapp = document.getElementById('loja-whats').value.trim();
+            const taxaCentro = parseFloat(document.getElementById('loja-taxa-c').value) || 0;
+            const taxaBairro = parseFloat(document.getElementById('loja-taxa-b').value) || 0;
+
+            database.ref('lojas/' + lojaId + '/loja').update({
+                nome, whatsapp, taxaCentro, taxaBairro
+            }).then(() => alert("Dados salvos com sucesso!"));
+        }
+
+        // CONVERSOR DA GALERIA DO CELULAR COM COMPRESSÃO
+        function uploadImagemGaleria(input, tipoDestino, maxWidth, maxHeight) {
+            if (input.files && input.files[0]) {
+                const arquivo = input.files[0];
+                const leitor = new FileReader();
+                
+                leitor.onload = function(e) {
+                    const imagemTemporaria = new Image();
+                    imagemTemporaria.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let width = imagemTemporaria.width;
+                        let height = imagemTemporaria.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
+                        } else {
+                            if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; }
+                        }
+
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(imagemTemporaria, 0, 0, width, height);
+                        
+                        // Transforma a foto em texto leve (Base64) com 70% de qualidade
+                        const fotoFinalBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                        
+                        // Atualiza a pré-visualização no celular do usuário
+                        document.getElementById('visualizar-' + tipoDestino).src = fotoFinalBase64;
+
+                        // Grava diretamente no Firebase
+                        database.ref('lojas/' + lojaId + '/loja/' + tipoDestino).set(fotoFinalBase64)
+                            .then(() => alert('Sua foto de ' + tipoDestino + ' foi enviada e atualizada!'));
+                    };
+                    imagemTemporaria.src = e.target.result;
+                };
+                leitor.readAsDataURL(arquivo);
+            }
+        }
+
+        function adicionarNovoProduto() {
+            const nome = document.getElementById('p-nome').value.trim();
+            const cat = document.getElementById('p-cat').value.trim();
+            const desc = document.getElementById('p-desc').value.trim();
+            const preco = parseFloat(document.getElementById('p-preco').value) || 0;
+
+            if(!nome || !cat || preco <= 0) { alert("Preencha o nome, categoria e preço válido."); return; }
+
+            const novoProd = { nome, cat, desc, preco, ativo: true, foto: "" };
+            listaProdutosGlobal.push(novoProd);
+
+            database.ref('lojas/' + lojaId + '/produtos').set(listaProdutosGlobal).then(() => {
+                alert("Item adicionado!");
+                document.getElementById('p-nome').value = '';
+                document.getElementById('p-desc').value = '';
+                document.getElementById('p-preco').value = '';
+            });
+        }
+
+        function deletarProduto(idx) {
+            if(confirm("Deseja mesmo remover esse item do cardápio?")) {
+                listaProdutosGlobal[idx].ativo = false;
+                database.ref('lojas/' + lojaId + '/produtos').set(listaProdutosGlobal);
+            }
         }
     </script>
 </body>
