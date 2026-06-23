@@ -1,5 +1,5 @@
 const firebaseConfig = {
-  databaseURL: "https://fome-zero-b220c-default-rtdb.firebaseio.com/:null", 
+  databaseURL: "https://fome-zero-b220c-default-rtdb.firebaseio.com/", 
   apiKey: "AIzaSyDiai4Zh0bl4sjMINPR5JFjJyB1D3MJVlk",
   authDomain: "fome-zero-b220c.firebaseapp.com",
   databaseURL: "https://fome-zero-b220c-default-rtdb.firebaseio.com",
