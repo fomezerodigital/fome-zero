@@ -3,45 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardápio Digital - Fome Zero</title>
+    <title>Cardápio Digital Premium</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 80px; }
-
-        /* TOPO PROFISSIONAL: CAPA + LOGO EM BOLINHA */
-        .topo-cardapio { position: relative; background: white; text-align: center; padding-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background: #f8fafc; color: #0f172a; padding-bottom: 90px; }
         
-        .capa-wrapper { width: 100%; height: 160px; background: #cbd5e1; overflow: hidden; }
-        .capa-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .container { max-width: 550px; margin: 0 auto; background: #ffffff; min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.03); }
 
-        .logo-wrapper { width: 90px; height: 90px; margin: -45px auto 12px auto; position: relative; z-index: 5; }
-        .logo-wrapper img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid white; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        /* TOPO PROFISSIONAL COM GRADIENTE */
+        .topo-loja { position: relative; background: #fff; text-align: center; padding-bottom: 16px; border-bottom: 1px solid #f1f5f9; }
+        
+        .capa-container { width: 100%; height: 150px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); overflow: hidden; position: relative; }
+        .capa-container img { width: 100%; height: 100%; object-fit: cover; }
+        .capa-overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.1); }
 
-        .loja-titulo { font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
-        
-        /* BADGE DE STATUS (ABERTO/FECHADO) */
-        .status-badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-        .status-badge.aberto { background: #dcfce7; color: #15803d; }
-        .status-badge.fechado { background: #fee2e2; color: #b91c1c; }
+        .logo-container { width: 96px; height: 96px; margin: -48px auto 10px auto; position: relative; z-index: 5; }
+        .logo-container img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #ffffff; object-fit: cover; box-shadow: 0 8px 16px rgba(0,0,0,0.12); background: #fff; }
 
-        /* CORPO DO CARDÁPIO & PRODUTOS */
-        .conteudo { max-width: 550px; margin: 0 auto; padding: 15px; }
-        .categoria-titulo { font-size: 1.1rem; font-weight: 800; color: #475569; margin: 25px 0 10px 0; border-left: 4px solid #dc2626; padding-left: 8px; }
+        .loja-nome { font-size: 1.35rem; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
         
-        .card-produto-cliente { background: white; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; justify-content: space-between; gap: 10px; border: 1px solid #f1f5f9; }
-        .prod-info { flex: 1; }
-        .prod-nome { font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
-        .prod-desc { font-size: 0.8rem; color: #64748b; margin-bottom: 8px; line-height: 1.3; }
-        .prod-preco { font-size: 1rem; font-weight: bold; color: #10b981; }
-        
-        .prod-foto { width: 85px; height: 85px; border-radius: 8px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; }
-        
-        .btn-adicionar { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 5px; }
+        .status-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-top: 8px; text-transform: uppercase; }
+        .status-tag.aberto { background: #dcfce7; color: #166534; }
+        .status-tag.fechado { background: #fee2e2; color: #991b1b; }
 
-        /* BARRA DA SACOLA FIXA EM BAIXO */
-        .barra-sacola { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; box-shadow: 0 -4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; max-width: 550px; margin: 0 auto; z-index: 100; border-top: 1px solid #e2e8f0; }
-        .btn-enviar-pedido { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; }
+        /* NAVEGAÇÃO DE CATEGORIAS FIXA (STICKY) */
+        .categorias-bar { position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 12px 15px; z-index: 40; border-bottom: 1px solid #f1f5f9; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+        .categorias-bar::-webkit-scrollbar { display: none; }
+        
+        .cat-pill { background: #f1f5f9; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #64748b; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .cat-pill.ativa { background: #dc2626; color: #ffffff; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2); }
+
+        /* LISTA DE PRODUTOS PREMIUM */
+        .cardapio-corpo { padding: 15px; }
+        .secao-titulo { font-size: 1.1rem; font-weight: 800; color: #1e293b; margin: 20px 0 12px 0; display: flex; align-items: center; gap: 6px; }
+        .secao-titulo::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+
+        .produto-card { background: #ffffff; border-radius: 14px; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; gap: 12px; transition: 0.2s; }
+        .produto-card:active { transform: scale(0.98); background: #f8fafc; }
+        
+        .prod-detalhes { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .prod-titulo { font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+        .prod-descricao { font-size: 0.8rem; color: #64748b; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .prod-preco-linha { display: flex; justify-content: space-between; align-items: center; }
+        .prod-valor { font-size: 1.05rem; font-weight: 700; color: #16a34a; }
+        
+        .btn-add-item { background: #fee2e2; color: #dc2626; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .btn-add-item:hover { background: #dc2626; color: #fff; }
+
+        .prod-imagem-box { width: 90px; height: 90px; border-radius: 10px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; border: 1px solid #f1f5f9; }
+
+        /* BARRA DA SACOLA INFERIOR */
+        .sacola-fixa { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; padding: 14px 20px; box-shadow: 0 -8px 24px rgba(0,0,0,0.06); display: none; justify-content: space-between; align-items: center; max-width: 550px; margin: 0 auto; z-index: 90; border-top: 1px solid #e2e8f0; border-radius: 16px 16px 0 0; }
+        .sacola-txt-total { font-size: 1.1rem; font-weight: 800; color: #0f172a; }
+        .btn-abrir-sacola { background: #dc2626; color: white; border: none; padding: 12px 22px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); }
+
+        /* MODAL DA SACOLA SLIDE-UP */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); display: none; justify-content: center; align-items: flex-end; z-index: 100; backdrop-filter: blur(4px); }
+        .modal-sheet { background: #ffffff; width: 100%; max-width: 550px; border-radius: 24px 24px 0 0; padding: 20px; max-height: 85vh; overflow-y: auto; box-shadow: 0 -10px 30px rgba(0,0,0,0.1); text-align: left; }
+        .modal-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; }
+        .modal-topo h3 { font-size: 1.15rem; font-weight: 800; }
+        .btn-fechar-modal { background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-weight: bold; cursor: pointer; color: #64748b; }
+        
+        .sacola-item-linha { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f8fafc; font-size: 0.9rem; }
+        .resumo-caixa { background: #f8fafc; padding: 12px; border-radius: 12px; margin: 15px 0; border: 1px solid #f1f5f9; }
+        .resumo-linha { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; color: #475569; }
+        
+        .form-campo { margin-bottom: 12px; }
+        .form-campo label { display: block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
+        input, select { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; padding: 11px; border-radius: 8px; font-size: 0.9rem; outline: none; transition: 0.2s; }
+        input:focus, select:focus { border-color: #dc2626; background: #fff; }
+        .btn-enviar-final { background: #16a34a; color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 0.95rem; margin-top: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2); }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -50,167 +82,286 @@
 </head>
 <body>
 
-    <div class="topo-cardapio">
-        <div class="capa-wrapper">
-            <img id="cardapio-capa" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800">
-        </div>
-        
-        <div class="logo-wrapper">
-            <img id="cardapio-logo" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=150">
+    <div class="container">
+        <!-- TOPO REESTRUTURADO -->
+        <div class="topo-loja">
+            <div class="capa-container">
+                <div class="capa-overlay"></div>
+                <img id="img-capa" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800">
+            </div>
+            <div class="logo-container">
+                <img id="img-logo" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=150">
+            </div>
+            <div id="txt-nome-loja" class="loja-nome">Carregando Estabelecimento...</div>
+            <div id="badge-status" class="status-tag fechado">📝 Conectando...</div>
         </div>
 
-        <div id="cardapio-nome" class="loja-titulo">Carregando nome...</div>
-        <div id="cardapio-status" class="status-badge fechado">Fechado</div>
+        <!-- BARRA DE CATEGORIAS EMBUTIDA -->
+        <div class="categorias-bar" id="barra-categorias-pills"></div>
+
+        <!-- AREA DO CARDAPIO -->
+        <div class="cardapio-corpo" id="lista-produtos-agrupados"></div>
     </div>
 
-    <div class="conteudo">
-        <div id="container-categorias-produtos"></div>
-    </div>
-
-    <div class="barra-sacola">
+    <!-- BARRA DA SACOLA FLUTUANTE -->
+    <div class="sacola-fixa" id="barra-inferior-sacola">
         <div>
-            <span style="font-size:0.8rem; color:#64748b; display:block;">Seu Pedido:</span>
-            <strong style="font-size:1.1rem; color:#0f172a;" id="txt-total-sacola">R$ 0,00</strong>
+            <span style="font-size:0.75rem; color:#64748b; display:block; font-weight:600;">Total sem entrega</span>
+            <div class="sacola-txt-total" id="txt-total-barra">R$ 0,00</div>
         </div>
-        <button class="btn-enviar-pedido" onclick="finalizarPedidoCliente()">Enviar via WhatsApp</button>
+        <button class="btn-abrir-sacola" onclick="abrirPlanilhaSacola()">
+            <i class="fa-solid fa-basket-shopping"></i> Ver Sacola (<span id="txt-qtd-barra">0</span>)
+        </button>
+    </div>
+
+    <!-- SHEET MODAL COMPLETO DE CHECKOUT -->
+    <div class="modal-overlay" id="checkout-modal" onclick="fecharPlanilhaSacolaNoFundo(event)">
+        <div class="modal-sheet">
+            <div class="modal-topo">
+                <h3>🛍️ Sua Sacola de Pedidos</h3>
+                <button class="btn-fechar-modal" onclick="fecharPlanilhaSacola()">✕</button>
+            </div>
+            
+            <div id="itens-da-sacola-lista"></div>
+
+            <div class="resumo-caixa">
+                <div class="resumo-linha"><span>Subtotal:</span><span id="resumo-subtotal">R$ 0,00</span></div>
+                <div class="resumo-linha"><span>Taxa de Entrega:</span><span id="resumo-taxa">R$ 0,00</span></div>
+                <div class="resumo-linha" style="font-weight:800; color:#16a34a; font-size:0.95rem; margin:0; border-top:1px solid #e2e8f0; padding-top:6px; margin-top:6px;">
+                    <span>Total Geral:</span><span id="resumo-total-geral">R$ 0,00</span>
+                </div>
+            </div>
+
+            <form onsubmit="processarEnvioFinalWhatsApp(event)">
+                <div class="form-campo"><label>Seu Nome Completo:</label><input type="text" id="c-nome" required placeholder="Ex: João Silva"></div>
+                <div class="form-campo">
+                    <label>Como deseja receber?</label>
+                    <select id="c-entrega-opcao" onchange="recalcularTaxaEntregaDinamica(this.value)" required>
+                        <option value="balcao">Retirar no Balcão (R$ 0,00)</option>
+                        <option value="centro">Entrega - Região Centro</option>
+                        <option value="bairro">Entrega - Outros Bairros</option>
+                    </select>
+                </div>
+                <div class="form-campo" id="campo-endereco-box" style="display:none;"><label>Endereço de Entrega:</label><input type="text" id="c-endereco" placeholder="Rua, número, bairro e ponto de referência"></div>
+                <div class="form-campo">
+                    <label>Forma de Pagamento:</label>
+                    <select id="c-pagamento" required>
+                        <option value="Pix">Pix</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-enviar-final"><i class="fa-solid fa-paper-plane"></i> Finalizar e Enviar no WhatsApp</button>
+            </form>
+        </div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const lojaId = urlParams.get('loja') || urlParams.get('Loja') || urlParams.get('LOJA');
 
-        let sacolaDeItens = [];
-        let whatsappLoja = "";
-        let lojaEstaAberta = true;
+        let informacoesLoja = {};
+        let listaDeProdutos = [];
+        let sacola = [];
+        let taxaAdicionada = 0;
+        let categoriaSelecionada = "Todos";
 
-        if (!lojaId) {
-            document.body.innerHTML = `<h2 style="text-align:center; margin-top:50px; color:#ef4444;">Erro: Link do cardápio inválido!</h2>`;
+        if(!lojaId) {
+            document.body.innerHTML = `
+                <div style="max-width:400px; margin:100px auto; padding:30px; background:#fff; border-radius:16px; text-align:center; border:1px solid #e2e8f0; box-shadow:0 10px 20px rgba(0,0,0,0.02);">
+                    <i class="fa-solid fa-circle-exclamation" style="font-size:3rem; color:#ef4444; margin-bottom:15px;"></i>
+                    <h3 style="font-weight:800; margin-bottom:8px;">Cardápio Indisponível</h3>
+                    <p style="font-size:0.85rem; color:#64748b;">Insira o identificador da loja para acessar o cardápio digital.</p>
+                </div>
+            `;
         } else {
-            conectarEBuscarDadosCardapio();
+            conectarFirebaseCardapio();
         }
 
-        function conectarEBuscarDadosCardapio() {
-            // 1. Puxa os dados visuais (Capa, Logo, Nome e Status) em tempo real
+        function conectarFirebaseCardapio() {
+            // Sincronização em tempo real do perfil (nome, status, capa, logo, taxas)
             database.ref('lojas/' + lojaId + '/loja').on('value', (snapshot) => {
-                const loja = snapshot.val() || {};
-                
-                document.getElementById('cardapio-nome').innerText = loja.nome || "Lanchonete Sem Nome";
-                whatsappLoja = loja.whatsapp || "";
-                lojaEstaAberta = loja.aberta !== false;
+                const d = snapshot.val() || {};
+                informacoesLoja = {
+                    nome: d.nome || "Fome Zero",
+                    aberta: d.aberta !== false,
+                    whatsapp: d.whatsapp || "",
+                    taxaCentro: Number(d.taxaCentro) || 0,
+                    taxaBairro: Number(d.taxaBairro) || 0,
+                    capa: d.capa || "",
+                    logo: d.logo || ""
+                };
 
-                // Aplica a capa do painel se existir
-                if (loja.capa) {
-                    document.getElementById('cardapio-capa').src = loja.capa;
-                }
-                // Aplica a logo redonda do painel se existir
-                if (loja.logo) {
-                    document.getElementById('cardapio-logo').src = loja.logo;
-                }
+                document.getElementById('txt-nome-loja').innerText = informacoesLoja.nome;
+                if(informacoesLoja.capa) document.getElementById('img-capa').src = informacoesLoja.capa;
+                if(informacoesLoja.logo) document.getElementById('img-logo').src = informacoesLoja.logo;
 
-                // Ajusta a plaquinha de Aberto / Fechado
-                const badge = document.getElementById('cardapio-status');
-                if (lojaEstaAberta) {
-                    badge.className = "status-badge aberto";
-                    badge.innerText = "🟢 Aberto";
+                const badge = document.getElementById('badge-status');
+                if(informacoesLoja.aberta) {
+                    badge.className = "status-tag aberto"; badge.innerText = "🟢 Aberto Agora";
                 } else {
-                    badge.className = "status-badge fechado";
-                    badge.innerText = "🔴 Fechado no Momento";
+                    badge.className = "status-tag fechado"; badge.innerText = "🔴 Fechado no Momento";
+                }
+
+                const sel = document.getElementById('c-entrega-opcao');
+                if(sel) {
+                    sel.options[1].text = `Entrega - Região Centro (R$ ${informacoesLoja.taxaCentro.toFixed(2)})`;
+                    sel.options[2].text = `Entrega - Outros Bairros (R$ ${informacoesLoja.taxaBairro.toFixed(2)})`;
                 }
             });
 
-            // 2. Puxa a lista de itens ativos e organiza por categoria
+            // Sincronização em tempo real da lista de produtos do cardápio
             database.ref('lojas/' + lojaId + '/produtos').on('value', (snapshot) => {
-                const lista = snapshot.val() || [];
-                const container = document.getElementById('container-categorias-produtos');
-                container.innerHTML = '';
+                listaDeProdutos = snapshot.val() || [];
+                construirInterfaceCardapio();
+            });
+        }
 
-                // Agrupa produtos por categorias
-                let categorias = {};
-                lista.forEach((p) => {
-                    if (p && p.ativo) {
-                        if (!categorias[p.cat]) categorias[p.cat] = [];
-                        categorias[p.cat].push(p);
-                    }
-                });
+        function construirInterfaceCardapio() {
+            const containerPills = document.getElementById('barra-categorias-pills');
+            const containerProdutos = document.getElementById('lista-produtos-agrupados');
+            if(!containerPills || !containerProdutos) return;
 
-                // Monta a tela estruturada do cardápio
-                Object.keys(categorias).forEach(catNome => {
-                    container.innerHTML += `<div class="categoria-titulo">${catNome}</div>`;
+            // Filtra e descobre categorias únicas ativas
+            const todasCategorias = ["Todos", ...new Set(listaDeProdutos.filter(p => p && p.ativo).map(p => p.cat))];
+            
+            containerPills.innerHTML = '';
+            todasCategorias.forEach(cat => {
+                const ativoClass = cat === categoriaSelecionada ? 'ativa' : '';
+                containerPills.innerHTML += `<button class="cat-pill ${ativoClass}" onclick="mudarCategoriaFiltro('${cat}')">${cat}</button>`;
+            });
+
+            // Agrupa e renderiza os cards
+            let aglomeradoHTML = "";
+            let categoriasMapeadas = {};
+
+            listaDeProdutos.forEach((p, idx) => {
+                if(p && p.ativo && (categoriaSelecionada === "Todos" || p.cat === categoriaSelecionada)) {
+                    if(!categoriasMapeadas[p.cat]) categoriasMapeadas[p.cat] = [];
+                    categoriasMapeadas[p.cat].push({ prod: p, originalIndex: idx });
+                }
+            });
+
+            Object.keys(categoriasMapeadas).forEach(nomeDaCat => {
+                aglomeradoHTML += `<div class="secao-titulo">${nomeDaCat}</div>`;
+                categoriasMapeadas[nomeDaCat].forEach(item => {
+                    const pr = item.prod;
+                    const fotoExibicao = pr.foto ? pr.foto : 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=150';
                     
-                    categorias[catNome].forEach(p => {
-                        // Verifica se o produto tem uma foto personalizada salva na galeria
-                        const imagemProduto = p.foto ? p.foto : 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=150';
-
-                        container.innerHTML += `
-                            <div class="card-produto-cliente">
-                                <div class="prod-info">
-                                    <div class="prod-nome">${p.nome}</div>
-                                    <div class="prod-desc">${p.desc || 'Sem descrição.'}</div>
-                                    <div class="prod-preco">R$ ${Number(p.preco).toFixed(2)}</div>
-                                    <button class="btn-adicionar" onclick="adicionarItemNaSacola('${p.nome}', ${p.preco})">
-                                        <i class="fa-solid fa-plus"></i> Adicionar
-                                    </button>
+                    aglomeradoHTML += `
+                        <div class="produto-card">
+                            <div class="prod-detalhes">
+                                <div>
+                                    <div class="prod-titulo">${pr.nome}</div>
+                                    <div class="prod-descricao">${pr.desc || 'Sem descrição cadastrada.'}</div>
                                 </div>
-                                <img class="prod-foto" src="${imagemProduto}">
+                                <div class="prod-preco-linha">
+                                    <span class="prod-valor">R$ ${Number(pr.preco).toFixed(2).replace('.',',')}</span>
+                                    <button class="btn-add-item" onclick="colocarNaSacola(${item.originalIndex})"><i class="fa-solid fa-plus"></i> Adicionar</button>
+                                </div>
                             </div>
-                        `;
-                    });
+                            <img class="prod-imagem-box" src="${fotoExibicao}">
+                        </div>
+                    `;
                 });
             });
+
+            containerProdutos.innerHTML = aglomeradoHTML || `<p style="text-align:center; padding:40px; color:#64748b; font-size:0.85rem;">Nenhum item cadastrado nesta categoria...</p>`;
         }
 
-        function adicionarItemNaSacola(nome, preco) {
-            if(!lojaEstaAberta) {
-                alert("Desculpe, o estabelecimento está fechado no momento e não está recebendo pedidos.");
+        function mudarCategoriaFiltro(novaCat) {
+            categoriaSelecionada = novaCat;
+            construirInterfaceCardapio();
+        }
+
+        function colocarNaSacola(indexOriginal) {
+            if(!informacoesLoja.aberta) {
+                alert("O estabelecimento está fechado no momento. Não é possível receber pedidos.");
                 return;
             }
-            sacolaDeItens.push({ nome, preco });
-            atualizarTotalSacola();
+            const p = listaDeProdutos[indexOriginal];
+            const existente = sacola.find(item => item.idx === indexOriginal);
+            if(existente) { existente.qtd++; } else { sacola.push({ idx: indexOriginal, nome: p.nome, preco: p.preco, qtd: 1 }); }
+            atualizarBarraSacolaInferior();
         }
 
-        function atualizarTotalSacola() {
-            let total = 0;
-            sacolaDeItens.forEach(i => total += i.preco);
-            document.getElementById('txt-total-sacola').innerText = "R$ " + total.toFixed(2);
+        function atualizarBarraSacolaInferior() {
+            const barra = document.getElementById('barra-inferior-sacola');
+            if(sacola.length === 0) { barra.style.display = "none"; return; }
+            barra.style.display = "flex";
+
+            let sub = 0; let totalQtd = 0;
+            sacola.forEach(i => { sub += (i.preco * i.qtd); totalQtd += i.qtd; });
+
+            document.getElementById('txt-total-barra').innerText = `R$ ${sub.toFixed(2).replace('.',',')}`;
+            document.getElementById('txt-qtd-barra').innerText = totalQtd;
+
+            document.getElementById('resumo-subtotal').innerText = `R$ ${sub.toFixed(2).replace('.',',')}`;
+            document.getElementById('resumo-taxa').innerText = `R$ ${taxaAdicionada.toFixed(2).replace('.',',')}`;
+            document.getElementById('resumo-total-geral').innerText = `R$ ${(sub + taxaAdicionada).toFixed(2).replace('.',',')}`;
         }
 
-        function finalizarPedidoCliente() {
-            if (sacolaDeItens.length === 0) {
-                alert("Sua sacola está vazia! Adicione pelo menos um item.");
-                return;
-            }
+        function recalcularTaxaEntregaDinamica(opcao) {
+            const campoEnd = document.getElementById('campo-endereco-box');
+            if(opcao === "centro") { taxaAdicionada = informacoesLoja.taxaCentro; campoEnd.style.display = "block"; }
+            else if(opcao === "bairro") { taxaAdicionada = informacoesLoja.taxaBairro; campoEnd.style.display = "block"; }
+            else { taxaAdicionada = 0; campoEnd.style.display = "none"; }
+            atualizarBarraSacolaInferior();
+        }
 
-            const nomeCliente = prompt("Qual é o seu nome para o pedido?");
-            if (!nomeCliente) return;
-
-            let totalPedido = 0;
-            let textoMensagem = `*Novo Pedido - Fome Zero*\n\n`;
-            textoMensagem += `👤 *Cliente:* ${nomeCliente}\n`;
-            textoMensagem += `-----------------------------\n`;
-            
-            sacolaDeItens.forEach(item => {
-                textoMensagem += `• 1x ${item.nome} - R$ ${item.preco.toFixed(2)}\n`;
-                totalPedido += item.preco;
+        function abrirPlanilhaSacola() {
+            const listRef = document.getElementById('itens-da-sacola-lista');
+            listRef.innerHTML = '';
+            sacola.forEach(i => {
+                listRef.innerHTML += `
+                    <div class="sacola-item-linha">
+                        <span><strong>${i.qtd}x</strong> ${i.nome}</span>
+                        <span>R$ ${(i.preco * i.qtd).toFixed(2).replace('.',',')}</span>
+                    </div>
+                `;
             });
-            
-            textoMensagem += `-----------------------------\n`;
-            textoMensagem += `💰 *Total dos Itens:* R$ ${totalPedido.toFixed(2)}\n\n`;
-            textoMensagem += `Obrigado pelo pedido!`;
+            document.getElementById('checkout-modal').style.display = "flex";
+        }
+        function fecharPlanilhaSacola() { document.getElementById('checkout-modal').style.display = "none"; }
+        function fecharPlanilhaSacolaNoFundo(e) { if(e.target.id === "checkout-modal") fecharPlanilhaSacola(); }
 
-            // Envia o registro do pedido em tempo real para a cozinha do painel administrativo
-            const dataAtual = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        function processarEnvioFinalWhatsApp(event) {
+            event.preventDefault();
+            const cliente = document.getElementById('c-nome').value.trim();
+            const endereco = document.getElementById('c-endereco').value.trim();
+            const pagamento = document.getElementById('c-pagamento').value;
+            const entregaTipo = document.getElementById('c-entrega-opcao').value;
+
+            let textoWhats = `*🍔 NOVO PEDIDO - ${informacoesLoja.nome.toUpperCase()}*\n\n`;
+            textoWhats += `*Cliente:* ${cliente}\n`;
+            textoWhats += `-----------------------------------------\n`;
+            
+            let subtotalGeral = 0;
+            sacola.forEach(i => {
+                textoWhats += `👉 ${i.qtd}x ${i.nome} (R$ ${(i.preco * i.qtd).toFixed(2)})\n`;
+                subtotalGeral += (i.preco * i.qtd);
+            });
+
+            textoWhats += `-----------------------------------------\n`;
+            textoWhats += `*Subtotal:* R$ ${subtotalGeral.toFixed(2)}\n`;
+            textoWhats += `*Taxa de Entrega:* R$ ${taxaAdicionada.toFixed(2)}\n`;
+            textoWhats += `*Total Geral:* R$ ${(subtotalGeral + taxaAdicionada).toFixed(2)}\n\n`;
+            
+            if(entregaTipo === "balcao") { textoWhats += `📍 *Retirada:* No Balcão da Loja\n`; }
+            else { textoWhats += `📍 *Endereço:* ${endereco}\n`; }
+            
+            textoWhats += `💳 *Forma de Pagamento:* ${pagamento}\n`;
+
+            // Envia o pedido pro painel (Cozinha em tempo real)
+            const horaAtual = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
             database.ref('lojas/' + lojaId + '/pedidos').push({
-                cliente: nomeCliente,
-                total: totalPedido,
-                data: dataAtual
+                cliente, total: (subtotalGeral + taxaAdicionada), data: horaAtual
             });
 
-            // Limpa a sacola e dispara para o WhatsApp do lojista
-            sacolaDeItens = [];
-            atualizarTotalSacola();
-
-            const linkWhats = `https://api.whatsapp.com/send?phone=${whatsappLoja}&text=${encodeURIComponent(textoMensagem)}`;
-            window.open(linkWhats, '_blank');
+            // Limpa tudo e dispara o app do WhatsApp
+            sacola = []; atualizarBarraSacolaInferior(); fecharPlanilhaSacola();
+            window.open(`https://api.whatsapp.com/send?phone=${informacoesLoja.whatsapp}&text=${encodeURIComponent(textoWhats)}`, '_blank');
         }
     </script>
 </body>
