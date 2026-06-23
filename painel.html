@@ -18,6 +18,7 @@
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: #4b5563; }
         input, select, textarea { width: 100%; background: #f9fafb; border: 1px solid #e5e7eb; padding: 10px; border-radius: 8px; font-size: 0.85rem; outline: none; }
+        input[type="file"] { padding: 8px; background: #fff; cursor: pointer; }
         .row-flex { display: flex; gap: 10px; } .row-flex .form-group { flex: 1; }
         .btn-salvar { width: 100%; background: #111827; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
@@ -88,21 +89,23 @@
         </div>
 
         <div class="secao-box">
-            <h2><i class="fa-solid fa-plus"></i> Inserir Lanche</h2>
-            <form onsubmit="cadastrarProduto(event)">
+            <h2><i class="fa-solid fa-plus"></i> Inserir Item</h2>
+            <form id="form-cadastro-lanche" onsubmit="cadastrarProduto(event)">
                 <div class="row-flex">
                     <div class="form-group"><label>Nome:</label><input type="text" id="prod-nome" required></div>
                     <div class="form-group">
                         <label>Categoria:</label>
-                        <select id="prod-cat"><option value="Hambúrgueres">Hambúrgueres</option><option value="Bebidas">Bebidas</option><option value="Combos">Combos</option></select>
+                        <!-- Ajustado aqui: Trocado "Hambúrgueres" por "Lanches" -->
+                        <select id="prod-cat"><option value="Lanches">Lanches</option><option value="Bebidas">Bebidas</option><option value="Combos">Combos</option></select>
                     </div>
                 </div>
                 <div class="row-flex">
                     <div class="form-group"><label>Preço:</label><input type="number" step="0.01" id="prod-preco" required></div>
-                    <div class="form-group"><label>Foto URL:</label><input type="text" id="prod-foto"></div>
+                    <!-- Ajustado aqui: Mudado de texto URL para arquivo local/galeria -->
+                    <div class="form-group"><label>Foto do Item:</label><input type="file" id="prod-foto" accept="image/*"></div>
                 </div>
                 <div class="form-group"><label>Descrição:</label><textarea id="prod-desc" required></textarea></div>
-                <button type="submit" class="btn-salvar" style="background:#16a34a;">Cadastrar Item</button>
+                <button type="submit" class="btn-salvar" style="background:#16a34a;" id="btn-cadastrar-item">Cadastrar Item</button>
             </form>
         </div>
 
@@ -197,15 +200,54 @@
             database.ref('lojas/' + lojaId + '/credenciais').set({ usuario: novoUser, senha: novaSenha }).then(() => alert("Acesso atualizado!"));
         }
 
+        // Função de cadastro otimizada para ler arquivos locais e comprimir imagens automaticamente
         function cadastrarProduto(event) {
             event.preventDefault();
-            produtos.push({
-                nome: document.getElementById('prod-nome').value, cat: document.getElementById('prod-cat').value,
-                preco: parseFloat(document.getElementById('prod-preco').value) || 0,
-                foto: document.getElementById('prod-foto').value, desc: document.getElementById('prod-desc').value,
-                ativo: true
+            const nome = document.getElementById('prod-nome').value;
+            const cat = document.getElementById('prod-cat').value;
+            const preco = parseFloat(document.getElementById('prod-preco').value) || 0;
+            const desc = document.getElementById('prod-desc').value;
+            const fotoInput = document.getElementById('prod-foto');
+            const btn = document.getElementById('btn-cadastrar-item');
+            const form = event.target;
+
+            btn.innerText = "Processando Imagem...";
+            btn.disabled = true;
+
+            if (fotoInput.files && fotoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        // Comprime e redimensiona a imagem para não sobrecarregar o Firebase
+                        const canvas = document.createElement('canvas');
+                        const max_width = 320; 
+                        const scaleSize = max_width / img.width;
+                        canvas.width = max_width;
+                        canvas.height = img.height * scaleSize;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                        const fotoBase64 = canvas.toDataURL('image/jpeg', 0.7); // 70% de qualidade compactada
+                        finalizarSalvamentoItem(nome, cat, preco, desc, fotoBase64, form, btn);
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(fotoInput.files[0]);
+            } else {
+                finalizarSalvamentoItem(nome, cat, preco, desc, "", form, btn);
+            }
+        }
+
+        function finalizarSalvamentoItem(nome, cat, preco, desc, foto, form, btn) {
+            produtos.push({ nome, cat, preco, foto, desc, ativo: true });
+            database.ref('lojas/' + lojaId + '/produtos').set(produtos).then(() => {
+                btn.innerText = "Cadastrar Item";
+                btn.disabled = false;
+                form.reset();
+                alert("Item cadastrado com sucesso!");
             });
-            database.ref('lojas/' + lojaId + '/produtos').set(produtos).then(() => event.target.reset());
         }
 
         function listarProdutos() {
@@ -218,8 +260,10 @@
         }
 
         function deletarProduto(index) {
-            produtos.splice(index, 1);
-            database.ref('lojas/' + lojaId + '/produtos').set(produtos);
+            if(confirm("Deseja mesmo remover este item?")) {
+                produtos.splice(index, 1);
+                database.ref('lojas/' + lojaId + '/produtos').set(produtos);
+            }
         }
 
         function fazerLogout() {
